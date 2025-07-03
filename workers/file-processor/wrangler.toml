@@ -1,0 +1,30 @@
+name = "contextlinc-file-processor"
+main = "src/index.ts"
+compatibility_date = "2024-01-15"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[env.preview]
+vars = { ENVIRONMENT = "preview" }
+
+[[r2_buckets]]
+binding = "CONTEXTLINC_STORAGE"
+bucket_name = "contextlinc-files"
+preview_bucket_name = "contextlinc-files-preview"
+
+[[d1_databases]]
+binding = "CONTEXTLINC_DB"
+database_name = "contextlinc-metadata"
+database_id = "0ead3006-ca13-49ba-a7df-e48705646953"
+
+[queues]
+producers = [
+  { binding = "FILE_PROCESSING_QUEUE", queue = "contextlinc-file-processing" }
+]
+
+[vars]
+OPENAI_API_KEY = "your-openai-api-key"
+VOYAGE_API_KEY = "your-voyage-api-key"
+TIKA_SERVER_URL = "https://tika.example.com"

@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContextLinc: Context Engineering Platform | BRAINSAIT LTD</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent-gold: #d4af37;
+            --accent-blue: #4a9eff;
+            --accent-gradient: linear-gradient(135deg, #d4af37, #4a9eff);
+            --shadow-glow: 0 0 50px rgba(212, 175, 55, 0.1);
+            --pricing-gradient: linear-gradient(135deg, #ff6b35, #f7931e);
+            --special-offer: linear-gradient(135deg, #ff4757, #3742fa);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header & Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .brand-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .doctor-name {
+            font-family: 'Times New Roman', Times, 'Georgia', 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .company-brand {
+            font-family: 'Times New Roman', Times, 'Georgia', 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+
+        .logo {
+            font-family: 'Times New Roman', Times, 'Georgia', 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .language-toggle {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: 50px;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .lang-btn.active {
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            transform: scale(1.05);
+        }
+
+        /* Platform Access Section */
+        .platform-access {
+            position: fixed;
+            top: 50%;
+            right: 2rem;
+            transform: translateY(-50%);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .access-platform-btn {
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            white-space: nowrap;
+            animation: pulse 2s infinite;
+        }
+
+        .access-platform-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: var(--shadow-glow); }
+            50% { box-shadow: 0 0 80px rgba(212, 175, 55, 0.3); }
+            100% { box-shadow: var(--shadow-glow); }
+        }
+
+        /* Pricing Modal */
+        .pricing-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .pricing-modal.active {
+            display: flex;
+        }
+
+        .pricing-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--text-primary);
+        }
+
+        .pricing-title {
+            font-family: 'Times New Roman', Times, 'Georgia', 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .pricing-plan {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-plan.special {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.1), rgba(55, 66, 250, 0.1));
+            border: 2px solid #ff4757;
+        }
+
+        .pricing-plan.special::before {
+            content: 'LAUNCH SPECIAL!';
+            position: absolute;
+            top: -10px;
+            right: -30px;
+            background: var(--special-offer);
+            color: white;
+            padding: 0.5rem 2rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transform: rotate(45deg);
+            box-shadow: 0 4px 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .pricing-plan:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-price.special {
+            color: #ff4757;
+        }
+
+        .plan-duration {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            color: var(--accent-gold);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .select-plan-btn {
+            width: 100%;
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            display: block;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .select-plan-btn.special {
+            background: var(--special-offer);
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(255, 71, 87, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 71, 87, 0.6); }
+            100% { box-shadow: 0 0 20px rgba(255, 71, 87, 0.3); }
+        }
+
+        .select-plan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .payment-methods {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .payment-title {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .payment-option {
+            background: var(--bg-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover {
+            background: var(--accent-gold);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-title {
+            font-family: 'Times New Roman', Times, 'Georgia', 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 50px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Main Content */
+        .main {
+            margin-top: 2rem;
+        }
+
+        .content-section {
+            margin-bottom: 4rem;
+            padding: 3rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-title {
+            font-family: 'Times New Roman', Times, 'Georgia', 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .content-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .content-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-family: 'Times New Roman', Times, 'Georgia', 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .card-content h3 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+
+        .card-content strong {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .layers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .layer-item {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 3px solid var(--accent-gold);
+            transition: all 0.3s ease;
+        }
+
+        .layer-item:hover {
+            transform: translateX(10px);
+            background: var(--bg-card);
+        }
+
+        .layer-number {
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .layer-title {
+            font-weight: 600;
+            margin: 0.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .layer-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .tech-category {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tech-category h4 {
+            color: var(--accent-blue);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .tech-list {
+            list-style: none;
+        }
+
+        .tech-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .tech-list li strong {
+            color: var(--text-primary);
+        }
+
+        .phases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .phase {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .phase-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .phase h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            margin-top: 1rem;
+        }
+
+        .language-version {
+            display: none;
+        }
+
+        .language-version.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .arabic {
+            direction: rtl;
+            text-align: right;
+        }
+
+        .arabic .hero-content {
+            text-align: center;
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Times New Roman', Times, 'Georgia', 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link:hover {
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .brand-section {
+                text-align: center;
+                align-items: center !important;
+            }
+            
+            .doctor-name {
+                font-size: 1rem;
+            }
+            
+            .company-brand {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .content-card {
+                padding: 1.5rem;
+            }
+            
+            .layers-grid,
+            .tech-stack,
+            .phases,
+            .pricing-plans {
+                grid-template-columns: 1fr;
+            }
+
+            .platform-access {
+                position: static;
+                transform: none;
+                margin: 2rem auto;
+                width: fit-content;
+            }
+
+            .pricing-content {
+                padding: 2rem;
+                margin: 1rem;
+            }
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-gradient);
+            transform-origin: left;
+            transform: scaleX(0);
+            z-index: 1001;
+            transition: transform 0.1s ease;
+        }
+
+        .floating-nav {
+            position: fixed;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--accent-gold);
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .floating-nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
+    <!-- Platform Access Button -->
+    <div class="platform-access">
+        <button class="access-platform-btn" onclick="openPricingModal()">
+            Access Platform
+        </button>
+    </div>
+
+    <!-- Pricing Modal -->
+    <div class="pricing-modal" id="pricingModal">
+        <div class="pricing-content">
+            <button class="close-modal" onclick="closePricingModal()">&times;</button>
+            <h2 class="pricing-title">Choose Your Plan</h2>
+            
+            <div class="pricing-plans">
+                <!-- Special Launch Offer -->
+                <div class="pricing-plan special">
+                    <div class="plan-name">Launch Special</div>
+                    <div class="plan-price special">199 <span style="font-size: 1rem;">SAR</span></div>
+                    <div class="plan-duration">1 Month Access</div>
+                    <ul class="plan-features">
+                        <li>Full Platform Access</li>
+                        <li>Unlimited File Uploads</li>
+                        <li>AI Agent Conversations</li>
+                        <li>Multi-modal Processing</li>
+                        <li>Context Engineering</li>
+                        <li>Email Support</li>
+                        <li>Limited Time Offer!</li>
+                    </ul>
+                    <button class="select-plan-btn special" onclick="selectPlan('launch-special', 199)">
+                        Get Launch Special
+                    </button>
+                </div>
+
+                <!-- Monthly Plan -->
+                <div class="pricing-plan">
+                    <div class="plan-name">Monthly</div>
+                    <div class="plan-price">230 <span style="font-size: 1rem;">SAR</span></div>
+                    <div class="plan-duration">Per Month</div>
+                    <ul class="plan-features">
+                        <li>Full Platform Access</li>
+                        <li>Unlimited File Uploads</li>
+                        <li>AI Agent Conversations</li>
+                        <li>Multi-modal Processing</li>
+                        <li>Context Engineering</li>
+                        <li>Priority Support</li>
+                        <li>Cancel Anytime</li>
+                    </ul>
+                    <button class="select-plan-btn" onclick="selectPlan('monthly', 230)">
+                        Select Monthly
+                    </button>
+                </div>
+
+                <!-- Yearly Plan -->
+                <div class="pricing-plan">
+                    <div class="plan-name">Yearly</div>
+                    <div class="plan-price">2760 <span style="font-size: 1rem;">SAR</span></div>
+                    <div class="plan-duration">Per Year (Save 2 Months!)</div>
+                    <ul class="plan-features">
+                        <li>Full Platform Access</li>
+                        <li>Unlimited File Uploads</li>
+                        <li>AI Agent Conversations</li>
+                        <li>Multi-modal Processing</li>
+                        <li>Context Engineering</li>
+                        <li>Premium Support</li>
+                        <li>Best Value!</li>
+                    </ul>
+                    <button class="select-plan-btn" onclick="selectPlan('yearly', 2760)">
+                        Select Yearly
+                    </button>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <h3 class="payment-title">Secure Payment Options</h3>
+                <div class="payment-options">
+                    <div class="payment-option">PayPal</div>
+                    <div class="payment-option">Stripe</div>
+                    <div class="payment-option">Apple Pay</div>
+                    <div class="payment-option">Google Pay</div>
+                    <div class="payment-option">STC Pay</div>
+                    <div class="payment-option">Mada</div>
+                    <div class="payment-option">Visa</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Navigation -->
+    <div class="floating-nav">
+        <div class="nav-dot active" data-section="hero"></div>
+        <div class="nav-dot" data-section="overview"></div>
+        <div class="nav-dot" data-section="architecture"></div>
+        <div class="nav-dot" data-section="multimodal"></div>
+        <div class="nav-dot" data-section="context"></div>
+        <div class="nav-dot" data-section="techstack"></div>
+        <div class="nav-dot" data-section="deployment"></div>
+        <div class="nav-dot" data-section="roadmap"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="brand-section" id="header-branding">
+                <div class="doctor-name" id="doctor-name">Dr. Mohamed El Fadil</div>
+                <div class="company-brand" id="company-brand">BrainSAIT</div>
+            </div>
+            <div class="language-toggle">
+                <button class="lang-btn active" onclick="switchLanguage('en')">English</button>
+                <button class="lang-btn" onclick="switchLanguage('ar')">العربية</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- English Version -->
+    <div class="language-version active" id="english-content">
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">ContextLinc</h1>
+                    <p class="hero-subtitle">Building the Future of Context Engineering<br>A Comprehensive Platform for Intelligent AI Agents</p>
+                    <a href="#overview" class="hero-cta">
+                        <span>Explore the Blueprint</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Overview Section -->
+                <section class="content-section" id="overview">
+                    <h2 class="section-title">The Revolution of Context Engineering</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">From Prompt Engineering to Context Engineering</h3>
+                        <div class="card-content">
+                            <p>Context engineering represents a fundamental evolution in AI agent development. As Phil Schmid defines it, context engineering is <strong>"the discipline of designing and building dynamic systems that provides the right information and tools, in the right format, at the right time, to give a LLM everything it needs to accomplish a task."</strong></p>
+                            
+                            <p>This shift from static prompt optimization to dynamic context systems is crucial for ContextLinc's success. The research reveals that <strong>most agent failures are context failures, not model failures</strong>.</p>
+                            
+                            <h3>The Paradigm Shift</h3>
+                            <p>A compelling example demonstrates this principle: a basic agent given only "Hey, just checking if you're around for a quick sync tomorrow" produces generic responses, while an agent with rich context (calendar data, email history, contact relationships) generates actionable responses like "Hey Jim! Tomorrow's packed on my end, back-to-back all day. Thursday AM free if that works for you? Sent an invite, lmk if it works."</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Architecture Section -->
+                <section class="content-section" id="architecture">
+                    <h2 class="section-title">Context Window Architecture</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">The 11-Layer Foundation</h3>
+                        <div class="card-content">
+                            <p>The Context Window Architecture (CWA) provides a structured approach to managing context through <strong>11 distinct layers</strong>, each serving a specific purpose in the context engineering pipeline.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="layers-grid">
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 1</div>
+                            <div class="layer-title">Instructions Layer</div>
+                            <div class="layer-desc">Defines the AI's constitution, persona, goals, and ethical boundaries</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 2</div>
+                            <div class="layer-title">User Info Layer</div>
+                            <div class="layer-desc">Personalization data, preferences, and account details</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 3</div>
+                            <div class="layer-title">Knowledge Layer</div>
+                            <div class="layer-desc">Retrieved documents and domain expertise through RAG</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 4</div>
+                            <div class="layer-title">Task/Goal State</div>
+                            <div class="layer-desc">Multi-step task management and workflow tracking</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 5</div>
+                            <div class="layer-title">Memory Layer</div>
+                            <div class="layer-desc">Integration of short-term and long-term memory systems</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 6</div>
+                            <div class="layer-title">Tools Layer</div>
+                            <div class="layer-desc">External tool definitions and capabilities</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 7</div>
+                            <div class="layer-title">Examples Layer</div>
+                            <div class="layer-desc">Few-shot learning examples and demonstrations</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 8</div>
+                            <div class="layer-title">Context Layer</div>
+                            <div class="layer-desc">Current conversation state and immediate context</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 9</div>
+                            <div class="layer-title">Constraints Layer</div>
+                            <div class="layer-desc">Operational limits and safety guidelines</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 10</div>
+                            <div class="layer-title">Output Format</div>
+                            <div class="layer-desc">Response structure and formatting requirements</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">Layer 11</div>
+                            <div class="layer-title">User Query</div>
+                            <div class="layer-desc">The immediate input triggering generation</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Multi-modal Section -->
+                <section class="content-section" id="multimodal">
+                    <h2 class="section-title">Multi-Modal Processing Architecture</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">Handling Diverse Content Types</h3>
+                        <div class="card-content">
+                            <p>Building on the layered context approach, ContextLinc requires a robust multi-modal processing architecture to handle diverse file types effectively. The research identifies <strong>LlamaIndex as the optimal framework</strong> for multi-modal applications.</p>
+                            
+                            <h3>Processing Pipeline</h3>
+                            <p><code>Input → Format Detection → Preprocessing → AI Analysis → Metadata Extraction → Vector Generation → Context Integration → Storage</code></p>
+                            
+                            <h3>Key Technologies</h3>
+                            <p><strong>Apache Tika</strong> emerges as the enterprise choice, supporting over 1000 file formats with comprehensive metadata extraction. For video processing, the <strong>NVIDIA AI Blueprint architecture</strong> provides a proven approach for breaking long videos into manageable chunks and maintaining context across segments.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Context Management Section -->
+                <section class="content-section" id="context">
+                    <h2 class="section-title">Dynamic Context Management</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">Four Primary Management Strategies</h3>
+                        <div class="card-content">
+                            <p>Context engineering requires four primary management strategies that ContextLinc must implement effectively:</p>
+                            
+                            <h3>Core Strategies</h3>
+                            <ul>
+                                <li><strong>Write</strong> strategies save context outside the limited context window using scratchpads and memory systems</li>
+                                <li><strong>Select</strong> strategies choose relevant information through sophisticated retrieval and filtering mechanisms</li>
+                                <li><strong>Compress</strong> strategies reduce context size through intelligent summarization and pruning</li>
+                                <li><strong>Isolate</strong> strategies separate different types of context for specialized handling</li>
+                            </ul>
+                            
+                            <h3>Three-Tier Memory Architecture</h3>
+                            <p>Short-term memory operates within the current context window. Medium-term memory maintains session-based continuity. Long-term memory provides persistent knowledge across all sessions using semantic indexing.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tech Stack Section -->
+                <section class="content-section" id="techstack">
+                    <h2 class="section-title">Optimal Technical Stack</h2>
+                    <div class="tech-stack">
+                        <div class="tech-category">
+                            <h4>Frontend Architecture</h4>
+                            <ul class="tech-list">
+                                <li><strong>Primary Platform:</strong> Progressive Web App using Next.js 14+ with React</li>
+                                <li><strong>Mobile Strategy:</strong> Start with PWA, add React Native for advanced features</li>
+                                <li><strong>UI Framework:</strong> Tailwind CSS for consistent, responsive design</li>
+                                <li><strong>Real-time Communication:</strong> WebSocket connections for chat interactions</li>
+                                <li><strong>State Management:</strong> Redux Toolkit for complex state handling</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tech-category">
+                            <h4>Backend Architecture</h4>
+                            <ul class="tech-list">
+                                <li><strong>API Gateway:</strong> Kong for comprehensive API management</li>
+                                <li><strong>Core Services:</strong> Node.js/TypeScript microservices architecture</li>
+                                <li><strong>Authentication:</strong> Auth0 for secure, scalable authentication</li>
+                                <li><strong>Primary Database:</strong> PostgreSQL with pgvector extension</li>
+                                <li><strong>Caching Layer:</strong> Redis for real-time features</li>
+                                <li><strong>Message Queue:</strong> RabbitMQ for reliable async processing</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tech-category">
+                            <h4>AI Infrastructure</h4>
+                            <ul class="tech-list">
+                                <li><strong>Model Serving:</strong> vLLM for large language models (24x throughput improvement)</li>
+                                <li><strong>Primary Models:</strong> GPT-4o for complex reasoning, Claude 3.5 Sonnet for analysis</li>
+                                <li><strong>Embedding Models:</strong> Voyage Multimodal-3 for unified content embeddings</li>
+                                <li><strong>Orchestration:</strong> Kubernetes with KServe for production model serving</li>
+                                <li><strong>Monitoring:</strong> Prometheus + Grafana with custom AI metrics dashboards</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Deployment Section -->
+                <section class="content-section" id="deployment">
+                    <h2 class="section-title">Deployment Strategy</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">Hybrid Edge-Cloud Approach</h3>
+                        <div class="card-content">
+                            <p>The deployment strategy should follow a <strong>hybrid edge-cloud approach</strong> to optimize for both performance and cost. Simple AI tasks like intent classification run on edge devices for ultra-low latency, while complex tasks requiring large language models execute in the cloud.</p>
+                            
+                            <h3>Global Accessibility</h3>
+                            <p>Deploy using a <strong>multi-region strategy</strong> with CloudFlare's global edge network for static assets and API caching. Implement geographic routing to direct users to the nearest inference endpoints.</p>
+                            
+                            <h3>Cost Optimization</h3>
+                            <p>Implement semantic caching to reuse similar query results. Use model selection algorithms to route simple queries to smaller, faster models. These strategies can reduce operational costs by 40-70% while maintaining performance.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Roadmap Section -->
+                <section class="content-section" id="roadmap">
+                    <h2 class="section-title">Implementation Roadmap</h2>
+                    <div class="phases">
+                        <div class="phase">
+                            <div class="phase-number">1</div>
+                            <h4>Foundation (Weeks 1-4)</h4>
+                            <ul>
+                                <li>Develop PWA with core chat interface and file upload capabilities</li>
+                                <li>Implement Apache Tika for document processing</li>
+                                <li>Deploy basic LlamaIndex multi-modal pipeline</li>
+                                <li>Set up PostgreSQL with pgvector for embeddings</li>
+                                <li>Establish CI/CD pipeline with automated testing</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase">
+                            <div class="phase-number">2</div>
+                            <h4>Enhancement (Weeks 5-8)</h4>
+                            <ul>
+                                <li>Add video processing with NVIDIA Blueprint architecture</li>
+                                <li>Implement three-tier memory system</li>
+                                <li>Deploy vLLM for optimized model serving</li>
+                                <li>Add WebSocket support for real-time streaming</li>
+                                <li>Implement comprehensive monitoring</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase">
+                            <div class="phase-number">3</div>
+                            <h4>Optimization (Weeks 9-12)</h4>
+                            <ul>
+                                <li>Deploy multi-format output generation</li>
+                                <li>Implement advanced context compression strategies</li>
+                                <li>Add native mobile apps for enhanced features</li>
+                                <li>Deploy to multiple regions for global access</li>
+                                <li>Implement cost optimization strategies</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="content-card">
+                        <h3 class="card-title">Success Metrics</h3>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Performance:</strong> AI response time under 2 seconds for 95% of queries</li>
+                                <li><strong>Scalability:</strong> Support for 10,000+ concurrent users</li>
+                                <li><strong>Quality:</strong> Context relevance score above 90%</li>
+                                <li><strong>Cost Efficiency:</strong> Under $0.10 per user interaction</li>
+                                <li><strong>Reliability:</strong> 99.9% uptime with automatic failover</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Arabic Version -->
+    <div class="language-version arabic" id="arabic-content">
+        <!-- Hero Section -->
+        <section class="hero" id="hero-ar">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">ContextLinc</h1>
+                    <p class="hero-subtitle">بناء مستقبل هندسة السياق<br>منصة شاملة لوكلاء الذكاء الاصطناعي الذكية</p>
+                    <a href="#overview-ar" class="hero-cta">
+                        <span>استكشف المخطط</span>
+                        <span>←</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Overview Section -->
+                <section class="content-section" id="overview-ar">
+                    <h2 class="section-title">ثورة هندسة السياق</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">من هندسة التوجيهات إلى هندسة السياق</h3>
+                        <div class="card-content">
+                            <p>تمثل هندسة السياق تطوراً جوهرياً في تطوير وكلاء الذكاء الاصطناعي. كما يعرفها Phil Schmid، هندسة السياق هي <strong>"التخصص في تصميم وبناء أنظمة ديناميكية تقدم المعلومات والأدوات الصحيحة، بالتنسيق الصحيح، في الوقت المناسب، لإعطاء نموذج اللغة الكبير كل ما يحتاجه لإنجاز مهمة."</strong></p>
+                            
+                            <p>هذا التحول من تحسين التوجيهات الثابتة إلى أنظمة السياق الديناميكية أمر بالغ الأهمية لنجاح ContextLinc. يكشف البحث أن <strong>معظم إخفاقات الوكلاء هي إخفاقات في السياق، وليس إخفاقات في النموذج</strong>.</p>
+                            
+                            <h3>التحول النموذجي</h3>
+                            <p>مثال مقنع يوضح هذا المبدأ: وكيل أساسي يُعطى فقط "مرحباً، أتحقق فقط إذا كنت متاحاً لمزامنة سريعة غداً" ينتج استجابات عامة، بينما وكيل بسياق غني (بيانات التقويم، تاريخ البريد الإلكتروني، علاقات جهات الاتصال) يولد استجابات قابلة للتنفيذ.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Architecture Section -->
+                <section class="content-section" id="architecture-ar">
+                    <h2 class="section-title">هندسة نافذة السياق</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">الأساس ذو الـ11 طبقة</h3>
+                        <div class="card-content">
+                            <p>توفر هندسة نافذة السياق (CWA) نهجاً منظماً لإدارة السياق من خلال <strong>11 طبقة متميزة</strong>، كل منها تخدم غرضاً محدداً في خط أنابيب هندسة السياق.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="layers-grid">
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 1</div>
+                            <div class="layer-title">طبقة التعليمات</div>
+                            <div class="layer-desc">تحدد دستور الذكاء الاصطناعي والشخصية والأهداف والحدود الأخلاقية</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 2</div>
+                            <div class="layer-title">طبقة معلومات المستخدم</div>
+                            <div class="layer-desc">بيانات التخصيص والتفضيلات وتفاصيل الحساب</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 3</div>
+                            <div class="layer-title">طبقة المعرفة</div>
+                            <div class="layer-desc">الوثائق المستردة والخبرة المجالية من خلال RAG</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 4</div>
+                            <div class="layer-title">حالة المهمة/الهدف</div>
+                            <div class="layer-desc">إدارة المهام متعددة الخطوات وتتبع سير العمل</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 5</div>
+                            <div class="layer-title">طبقة الذاكرة</div>
+                            <div class="layer-desc">تكامل أنظمة الذاكرة قصيرة وطويلة المدى</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 6</div>
+                            <div class="layer-title">طبقة الأدوات</div>
+                            <div class="layer-desc">تعريفات الأدوات الخارجية والقدرات</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 7</div>
+                            <div class="layer-title">طبقة الأمثلة</div>
+                            <div class="layer-desc">أمثلة التعلم القليل والعروض التوضيحية</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 8</div>
+                            <div class="layer-title">طبقة السياق</div>
+                            <div class="layer-desc">حالة المحادثة الحالية والسياق الفوري</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 9</div>
+                            <div class="layer-title">طبقة القيود</div>
+                            <div class="layer-desc">الحدود التشغيلية وإرشادات الأمان</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 10</div>
+                            <div class="layer-title">تنسيق الإخراج</div>
+                            <div class="layer-desc">هيكل الاستجابة ومتطلبات التنسيق</div>
+                        </div>
+                        <div class="layer-item">
+                            <div class="layer-number">الطبقة 11</div>
+                            <div class="layer-title">استعلام المستخدم</div>
+                            <div class="layer-desc">المدخل الفوري الذي يؤدي إلى التوليد</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Multi-modal Section -->
+                <section class="content-section" id="multimodal-ar">
+                    <h2 class="section-title">هندسة المعالجة متعددة الأنماط</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">التعامل مع أنواع المحتوى المتنوعة</h3>
+                        <div class="card-content">
+                            <p>بناءً على نهج السياق الطبقي، يتطلب ContextLinc هندسة معالجة متعددة الأنماط قوية للتعامل بفعالية مع أنواع الملفات المتنوعة. يحدد البحث <strong>LlamaIndex كإطار العمل الأمثل</strong> للتطبيقات متعددة الأنماط.</p>
+                            
+                            <h3>خط أنابيب المعالجة</h3>
+                            <p><code>المدخل ← كشف التنسيق ← المعالجة المسبقة ← تحليل الذكاء الاصطناعي ← استخراج البيانات الوصفية ← توليد المتجهات ← تكامل السياق ← التخزين</code></p>
+                            
+                            <h3>التقنيات الرئيسية</h3>
+                            <p><strong>Apache Tika</strong> يبرز كالخيار المؤسسي، حيث يدعم أكثر من 1000 تنسيق ملف مع استخراج شامل للبيانات الوصفية. لمعالجة الفيديو، توفر <strong>هندسة NVIDIA AI Blueprint</strong> نهجاً مثبتاً لتقسيم مقاطع الفيديو الطويلة إلى أجزاء قابلة للإدارة.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Context Management Section -->
+                <section class="content-section" id="context-ar">
+                    <h2 class="section-title">إدارة السياق الديناميكية</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">أربع استراتيجيات إدارة أساسية</h3>
+                        <div class="card-content">
+                            <p>تتطلب هندسة السياق أربع استراتيجيات إدارة أساسية يجب على ContextLinc تنفيذها بفعالية:</p>
+                            
+                            <h3>الاستراتيجيات الأساسية</h3>
+                            <ul>
+                                <li>استراتيجيات <strong>الكتابة</strong> تحفظ السياق خارج نافذة السياق المحدودة</li>
+                                <li>استراتيجيات <strong>الاختيار</strong> تختار المعلومات ذات الصلة من خلال آليات الاسترداد المتطورة</li>
+                                <li>استراتيجيات <strong>الضغط</strong> تقلل حجم السياق من خلال التلخيص الذكي</li>
+                                <li>استراتيجيات <strong>العزل</strong> تفصل أنواع مختلفة من السياق للتعامل المتخصص</li>
+                            </ul>
+                            
+                            <h3>هندسة الذاكرة ثلاثية المستويات</h3>
+                            <p>تعمل الذاكرة قصيرة المدى ضمن نافذة السياق الحالية. تحافظ الذاكرة متوسطة المدى على الاستمرارية القائمة على الجلسة. توفر الذاكرة طويلة المدى المعرفة المستمرة عبر جميع الجلسات.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tech Stack Section -->
+                <section class="content-section" id="techstack-ar">
+                    <h2 class="section-title">المجموعة التقنية المثلى</h2>
+                    <div class="tech-stack">
+                        <div class="tech-category">
+                            <h4>هندسة الواجهة الأمامية</h4>
+                            <ul class="tech-list">
+                                <li><strong>المنصة الأساسية:</strong> تطبيق ويب تقدمي باستخدام Next.js 14+ مع React</li>
+                                <li><strong>استراتيجية المحمول:</strong> البدء بـ PWA، إضافة React Native للميزات المتقدمة</li>
+                                <li><strong>إطار واجهة المستخدم:</strong> Tailwind CSS للتصميم المتسق والمتجاوب</li>
+                                <li><strong>التواصل في الوقت الفعلي:</strong> اتصالات WebSocket لتفاعلات الدردشة</li>
+                                <li><strong>إدارة الحالة:</strong> Redux Toolkit للتعامل مع الحالة المعقدة</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tech-category">
+                            <h4>هندسة الخلفية</h4>
+                            <ul class="tech-list">
+                                <li><strong>بوابة API:</strong> Kong لإدارة API الشاملة</li>
+                                <li><strong>الخدمات الأساسية:</strong> هندسة الخدمات المصغرة Node.js/TypeScript</li>
+                                <li><strong>المصادقة:</strong> Auth0 للمصادقة الآمنة والقابلة للتطوير</li>
+                                <li><strong>قاعدة البيانات الأساسية:</strong> PostgreSQL مع امتداد pgvector</li>
+                                <li><strong>طبقة التخزين المؤقت:</strong> Redis للميزات في الوقت الفعلي</li>
+                                <li><strong>قائمة انتظار الرسائل:</strong> RabbitMQ للمعالجة غير المتزامنة الموثوقة</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tech-category">
+                            <h4>بنية الذكاء الاصطناعي</h4>
+                            <ul class="tech-list">
+                                <li><strong>خدمة النموذج:</strong> vLLM لنماذج اللغة الكبيرة (تحسين الإنتاجية 24 مرة)</li>
+                                <li><strong>النماذج الأساسية:</strong> GPT-4o للاستدلال المعقد، Claude 3.5 Sonnet للتحليل</li>
+                                <li><strong>نماذج التضمين:</strong> Voyage Multimodal-3 للتضمينات الموحدة للمحتوى</li>
+                                <li><strong>التنسيق:</strong> Kubernetes مع KServe لخدمة النماذج الإنتاجية</li>
+                                <li><strong>المراقبة:</strong> Prometheus + Grafana مع لوحات مقاييس الذكاء الاصطناعي المخصصة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Deployment Section -->
+                <section class="content-section" id="deployment-ar">
+                    <h2 class="section-title">استراتيجية النشر</h2>
+                    <div class="content-card">
+                        <h3 class="card-title">نهج الحافة-السحابة المختلط</h3>
+                        <div class="card-content">
+                            <p>يجب أن تتبع استراتيجية النشر <strong>نهج الحافة-السحابة المختلط</strong> لتحسين الأداء والتكلفة. المهام البسيطة للذكاء الاصطناعي تعمل على أجهزة الحافة للزمن المنخفض للغاية، بينما المهام المعقدة تنفذ في السحابة.</p>
+                            
+                            <h3>الوصول العالمي</h3>
+                            <p>النشر باستخدام <strong>استراتيجية متعددة المناطق</strong> مع شبكة الحافة العالمية لـ CloudFlare للأصول الثابتة وتخزين API مؤقتاً. تنفيذ التوجيه الجغرافي لتوجيه المستخدمين إلى أقرب نقاط استنتاج.</p>
+                            
+                            <h3>تحسين التكلفة</h3>
+                            <p>تنفيذ التخزين المؤقت الدلالي لإعادة استخدام نتائج الاستعلامات المشابهة. استخدام خوارزميات اختيار النموذج لتوجيه الاستعلامات البسيطة إلى نماذج أصغر وأسرع. هذه الاستراتيجيات يمكن أن تقلل التكاليف التشغيلية بنسبة 40-70%.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Roadmap Section -->
+                <section class="content-section" id="roadmap-ar">
+                    <h2 class="section-title">خارطة طريق التنفيذ</h2>
+                    <div class="phases">
+                        <div class="phase">
+                            <div class="phase-number">1</div>
+                            <h4>الأساس (الأسابيع 1-4)</h4>
+                            <ul>
+                                <li>تطوير PWA مع واجهة الدردشة الأساسية وقدرات تحميل الملفات</li>
+                                <li>تنفيذ Apache Tika لمعالجة الوثائق</li>
+                                <li>نشر خط أنابيب LlamaIndex متعدد الأنماط الأساسي</li>
+                                <li>إعداد PostgreSQL مع pgvector للتضمينات</li>
+                                <li>إنشاء خط أنابيب CI/CD مع الاختبار التلقائي</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase">
+                            <div class="phase-number">2</div>
+                            <h4>التحسين (الأسابيع 5-8)</h4>
+                            <ul>
+                                <li>إضافة معالجة الفيديو مع هندسة NVIDIA Blueprint</li>
+                                <li>تنفيذ نظام الذاكرة ثلاثي المستويات</li>
+                                <li>نشر vLLM لخدمة النماذج المحسنة</li>
+                                <li>إضافة دعم WebSocket للبث في الوقت الفعلي</li>
+                                <li>تنفيذ المراقبة الشاملة</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase">
+                            <div class="phase-number">3</div>
+                            <h4>التحسين (الأسابيع 9-12)</h4>
+                            <ul>
+                                <li>نشر توليد المخرجات متعددة التنسيقات</li>
+                                <li>تنفيذ استراتيجيات ضغط السياق المتقدمة</li>
+                                <li>إضافة تطبيقات المحمول الأصلية للميزات المحسنة</li>
+                                <li>النشر في مناطق متعددة للوصول العالمي</li>
+                                <li>تنفيذ استراتيجيات تحسين التكلفة</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="content-card">
+                        <h3 class="card-title">مقاييس النجاح</h3>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>الأداء:</strong> وقت استجابة الذكاء الاصطناعي تحت ثانيتين لـ95% من الاستعلامات</li>
+                                <li><strong>القابلية للتطوير:</strong> دعم أكثر من 10,000 مستخدم متزامن</li>
+                                <li><strong>الجودة:</strong> نقاط صلة السياق فوق 90%</li>
+                                <li><strong>كفاءة التكلفة:</strong> تحت 0.10 دولار لكل تفاعل مستخدم</li>
+                                <li><strong>الموثوقية:</strong> وقت تشغيل 99.9% مع التبديل التلقائي</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">BRAINSAIT LTD</div>
+                <p class="footer-text">Intersection of healthcare, Business and technology, using collective brainpower to deliver solutions that are Automated, Integrated, and Technology-driven.</p>
+                <div class="social-links">
+                    <a href="https://x.com/brainsait369" class="social-link" target="_blank">𝕏</a>
+                    <a href="https://linkedin.com/in/fadil369" class="social-link" target="_blank">in</a>
+                    <a href="https://github.com/fadil369" class="social-link" target="_blank">gh</a>
+                    <a href="https://calendly.com/fadil369" class="social-link" target="_blank">📅</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Language switching functionality
+        function switchLanguage(lang) {
+            const englishContent = document.getElementById('english-content');
+            const arabicContent = document.getElementById('arabic-content');
+            const langButtons = document.querySelectorAll('.lang-btn');
+            const doctorName = document.getElementById('doctor-name');
+            const companyBrand = document.getElementById('company-brand');
+            const brandSection = document.getElementById('header-branding');
+            
+            langButtons.forEach(btn => btn.classList.remove('active'));
+            
+            if (lang === 'en') {
+                englishContent.classList.add('active');
+                arabicContent.classList.remove('active');
+                document.querySelector('[onclick="switchLanguage(\'en\')"]').classList.add('active');
+                document.documentElement.setAttribute('dir', 'ltr');
+                brandSection.style.alignItems = 'flex-start';
+                doctorName.textContent = 'Dr. Mohamed El Fadil';
+                companyBrand.textContent = 'BrainSAIT';
+            } else {
+                arabicContent.classList.add('active');
+                englishContent.classList.remove('active');
+                document.querySelector('[onclick="switchLanguage(\'ar\')"]').classList.add('active');
+                document.documentElement.setAttribute('dir', 'rtl');
+                brandSection.style.alignItems = 'flex-end';
+                doctorName.textContent = 'د.محمد الفاضل';
+                companyBrand.textContent = 'برينسايت';
+            }
+        }
+
+        // Pricing modal functionality
+        function openPricingModal() {
+            document.getElementById('pricingModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePricingModal() {
+            document.getElementById('pricingModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function selectPlan(planType, price) {
+            // Store selected plan info
+            localStorage.setItem('selectedPlan', JSON.stringify({ planType, price }));
+            
+            // Redirect to platform with payment flow
+            window.location.href = `/platform?plan=${planType}&price=${price}`;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('pricingModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePricingModal();
+            }
+        });
+
+        // Scroll indicator
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            scrollIndicator.style.transform = `scaleX(${scrollPercentage / 100})`;
+        });
+
+        // Floating navigation
+        const sections = document.querySelectorAll('.content-section, .hero');
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-section') === current.replace('-ar', '')) {
+                    dot.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scrolling for navigation dots
+        navDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const isArabic = document.getElementById('arabic-content').classList.contains('active');
+                const sectionId = dot.getAttribute('data-section');
+                const targetId = isArabic && sectionId !== 'hero' ? `${sectionId}-ar` : sectionId;
+                const targetSection = document.getElementById(targetId);
+                
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Smooth scrolling for CTA button
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctaButtons = document.querySelectorAll('.hero-cta');
+            ctaButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isArabic = this.closest('#arabic-content');
+                    const targetId = isArabic ? 'overview-ar' : 'overview';
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all content cards
+        document.querySelectorAll('.content-card, .layer-item, .tech-category, .phase').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

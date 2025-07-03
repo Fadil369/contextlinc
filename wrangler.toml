@@ -1,0 +1,11 @@
+name = "contextlinc"
+compatibility_date = "2024-01-15"
+pages_build_output_dir = "out"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+APP_URL = "https://context.thefadil.site"
+
+[env.preview.vars]
+ENVIRONMENT = "preview"
+APP_URL = "https://contextlinc-preview.pages.dev"
