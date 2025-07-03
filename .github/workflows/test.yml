@@ -1,0 +1,167 @@
+name: Test ContextLinc Platform
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  # Lint and type check
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint --if-present
+
+    - name: TypeScript type check
+      run: npx tsc --noEmit
+
+  # Test frontend build
+  test-frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Test build
+      run: npm run build
+
+    - name: Verify build output
+      run: |
+        if [ ! -d "out" ]; then
+          echo "Build output directory 'out' not found"
+          exit 1
+        fi
+        if [ ! -f "out/index.html" ]; then
+          echo "Main index.html not found in build output"
+          exit 1
+        fi
+        if [ ! -f "out/presentation.html" ]; then
+          echo "Presentation.html not found in build output"
+          exit 1
+        fi
+        echo "✅ Frontend build verification passed"
+
+  # Test Workers compilation
+  test-workers:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Wrangler
+      run: npm install -g wrangler
+
+    - name: Test API Worker compilation
+      working-directory: workers/api
+      run: |
+        npm install
+        npx wrangler deploy --dry-run --outdir dist
+        echo "✅ API Worker compilation passed"
+
+    - name: Test File Processor compilation
+      working-directory: workers/file-processor
+      run: |
+        npm install  
+        npx wrangler deploy --dry-run --outdir dist
+        echo "✅ File Processor compilation passed"
+
+  # Security and dependency checks
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run security audit
+      run: npm audit --audit-level high
+
+    - name: Check for outdated packages
+      run: npm outdated --long || true
+
+  # Code quality checks
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Check file structure
+      run: |
+        echo "Checking project structure..."
+        required_files=(
+          "package.json"
+          "next.config.js" 
+          "tailwind.config.js"
+          "tsconfig.json"
+          "src/app/page.tsx"
+          "src/app/platform/page.tsx"
+          "workers/api/src/index.ts"
+          "workers/file-processor/src/index.ts"
+          "public/presentation.html"
+        )
+        
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ Required file missing: $file"
+            exit 1
+          fi
+        done
+        echo "✅ All required files present"
+
+    - name: Verify environment configurations
+      run: |
+        echo "Checking Wrangler configurations..."
+        if [ ! -f "workers/api/wrangler.toml" ]; then
+          echo "❌ API Worker wrangler.toml missing"
+          exit 1
+        fi
+        if [ ! -f "workers/file-processor/wrangler.toml" ]; then
+          echo "❌ File Processor wrangler.toml missing"
+          exit 1
+        fi
+        echo "✅ Wrangler configurations present"
